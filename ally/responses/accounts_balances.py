@@ -20,8 +20,11 @@ class AccountsBalancesResponse(Response):
 
     def __parse_json(self, data):
         super().parse_json(data)
-        for account in self.json["accountbalance"]:
-            this_data = {}
-            this_data["accountname"] = account["accountname"]
-            this_data["accountvalue"] = account["accountvalue"]
-            self.account_data[account["account"]] = this_data
+        account_balance = self.json["accountbalance"]
+        if isinstance(account_balance, dict):
+            account_balance = [account_balance]
+        for account in account_balance:
+            self.account_data[account["account"]] = {
+                "accountname" : account["accountname"],
+                "accountvalue": account["accountvalue"]
+            }
